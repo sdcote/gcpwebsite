@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+<VirtualHost *:80>
+        ServerAdmin {{ admin_email }}
+        DocumentRoot /var/www/html
+        #ServerName your-domain.com
+        #ServerAlias www.your-domain.com
+
+        <Directory /var/www/html/>
+          Options -Indexes +FollowSymLinks +MultiViews
+           AllowOverride All
+           Order allow,deny
+           allow from all
+        </Directory>
+
+        <FilesMatch \.php$>
+          # 2.4.10+ can proxy to unix socket
+          SetHandler "proxy:unix:/var/run/php/php7.2-fpm.sock|fcgi://localhost/"
+           # otherwise we can just use a tcp socket:
+          #SetHandler "proxy:fcgi://127.0.0.1:9000"
+        </FilesMatch>      
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+</VirtualHost>

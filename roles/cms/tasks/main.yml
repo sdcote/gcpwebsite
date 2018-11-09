@@ -1,0 +1,132 @@
+---
+
+- name: Install Webstack 
+  package: name={{ item }} state=present
+  with_items:
+    - apache2
+    - php 
+    - php-cgi 
+    - libapache2-mod-php 
+    - php-common 
+    - php-pear 
+    - php-mbstring 
+    - php-fpm
+    - php-opcache
+    - php-apcu
+    - php-mysql
+    - php-curl
+    - php-memcache
+    - php-mbstring
+    - unzip
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Apache Configuration
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: Enable Apache2 Modules
+  command: a2enmod {{ item }}
+  with_items: 
+    - proxy_fcgi 
+    - setenvif
+#    - alias
+#    - auth_basic
+#    - autoindex
+#    - deflate
+#    - dir
+#    - env
+#    - expires
+#    - suexec 
+#    - ssl
+#    - actions
+#    - include
+#    - cgi
+#    - rewrite
+#    - status
+#    - vhost_alias
+  notify: restart apache2
+
+- name: Enable Apache2 PHP-FPM Config
+  command: a2enconf php7.2-fpm  
+  notify: 
+    - restart apache2
+    - restart php-fpm
+
+- name: Default Configuration File
+  template: 
+    src=virtualhost.j2 
+    dest=/etc/apache2/sites-available/000-default.conf
+  notify: 
+    - restart apache2
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# PHP Configuration
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: PHP Configuration
+  template: 
+    src=apache_php.ini.j2 
+    dest=/etc/php/7.2/apache2/php.ini 
+    owner=root 
+    group=root 
+    mode=0755
+
+- name: Place PHP Info page for tests
+  copy:
+    src=index.php
+    dest=/var/www/html/index.php
+
+- name: remove default index file
+  file:
+    state: absent
+    path: /var/www/html/index.html
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# PHP Composer dependency manager
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
+- name: Grab PHP composer
+  get_url: 
+    url=https://getcomposer.org/installer 
+    dest=/tmp/installer
+  
+- name: Run the composer installer  
+  command: /usr/bin/php /tmp/installer
+
+- name: mv composer to /usr/local/bin/composer
+  command: mv composer.phar /usr/local/bin/composer
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Joomla
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: Download Joomla! CMS
+  get_url:
+    url: https://downloads.joomla.org/cms/joomla3/3-9-0/joomla_3-9-0-stable-full_package-zip
+    dest: /tmp/joomla.zip
+
+- name: Create Joomla Directory
+  file: 
+    path: /var/www/joomla 
+    state: directory
+  
+- name: Extract Joomla into /var/www
+  unarchive:
+    src: /tmp/joomla.zip
+    dest: /var/www/joomla/
+    remote_src: yes
+  notify: restart apache2
+
+- name: Remove Joomla Archive
+  file:
+    state: absent
+    path: /tmp/joomla.zip
+
+- name: Change ownership of the web directories
+  file:
+    dest: /var/www
+    owner: www-data
+    group: www-data
+    recurse: yes
+  
+# TODO: Copy over the Joomla Configuration via templates
+# TODO: Remove the installation directory

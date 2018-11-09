@@ -1,0 +1,8 @@
+---
+# This is expected to be called with no inventory file, just an IP address or 
+# host name so we specify 'all' hosts
+- hosts: all
+  become: yes
+  roles:
+    - cms
+
