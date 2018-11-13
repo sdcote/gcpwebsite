@@ -56,3 +56,18 @@ variable "ssh_pub_key_file"{
 variable "ssh_pri_key_file"{
   description = "This is the path to the SSH private key file for the ssh_user"
 }
+
+variable "admin_email"{
+  description = ""
+  default = "sysop@localhost"
+}
+variable "document_root"{
+  description = ""
+  default = "/var/www/default"
+}
+
+variable "domain_name"{
+  description = ""
+  default = "localhost"
+}
+

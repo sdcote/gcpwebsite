@@ -1,2 +1,4 @@
 ---
-# vars file for role-php-fpm
+# vars file for cms
+
+# Variables are currently defined in the defaults section for this role

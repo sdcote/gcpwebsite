@@ -85,7 +85,7 @@ resource "google_compute_instance" "host" {
   // Call ansible locally to log into the host and provision it using our playbook.
   // Note the inventory (-i) uses the IPv4 address appended with a comma and the playbook must contain 'hosts: all' to work properly.
   provisioner "local-exec" {
-    command = "ansible-playbook -u ${var.ssh_user} -i '${google_compute_instance.host.network_interface.0.access_config.0.assigned_nat_ip},' --private-key ${var.ssh_pri_key_file} -T 300 playbook.yml" 
+    command = "ansible-playbook -u ${var.ssh_user} -i '${google_compute_instance.host.network_interface.0.access_config.0.assigned_nat_ip},' --private-key ${var.ssh_pri_key_file} -T 300 playbook.yml --extra-vars \"admin_email=${var.admin_email} document_root=${var.document_root} domain_name=${var.domain_name}\"" 
   }
 
 }

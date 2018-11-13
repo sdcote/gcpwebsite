@@ -1,5 +1,8 @@
 ---
-admin_email: mail@example.org
+site:
+  admin_email: sysop@localhost
+  document_root: /var/www/default
+  domain_name: localhost
 
 apache:
   port: 80
