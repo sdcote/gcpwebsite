@@ -17,3 +17,6 @@ session_cookie_httponly: 1
 display_errors: Off
 error_reporting: E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED
 
+# Values are Off, or the size of your buffer (a common value is 4096). Setting the value to "On" means unlimited buffer
+output_buffering: Off
+
