@@ -1,5 +1,16 @@
 ---
 
+- debug:
+    msg: 
+      - "Using an email of {{ admin_email }}"
+      - "Using a directory of {{ document_root }}"
+      - "Using a domain of {{ domain_name }}"
+
+- name: Display all variables/facts known for a host
+  debug:
+    var: hostvars[inventory_hostname]
+    verbosity: 4
+    
 - name: Install Webstack 
   package: name={{ item }} state=present
   with_items:
@@ -28,21 +39,6 @@
   with_items: 
     - proxy_fcgi 
     - setenvif
-#    - alias
-#    - auth_basic
-#    - autoindex
-#    - deflate
-#    - dir
-#    - env
-#    - expires
-#    - suexec 
-#    - ssl
-#    - actions
-#    - include
-#    - cgi
-#    - rewrite
-#    - status
-#    - vhost_alias
   notify: restart apache2
 
 - name: Enable Apache2 PHP-FPM Config
@@ -69,16 +65,6 @@
     owner=root 
     group=root 
     mode=0755
-
-- name: Place PHP Info page for tests
-  copy:
-    src=index.php
-    dest=/var/www/html/index.php
-
-- name: remove default index file
-  file:
-    state: absent
-    path: /var/www/html/index.html
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # PHP Composer dependency manager
@@ -111,13 +97,13 @@
 
 - name: Create Joomla Directory
   file: 
-    path: /var/www/default
+    path: "{{ document_root }}"
     state: directory
   
-- name: Extract Joomla into /var/www
+- name: Extract Joomla into {{ document_root }}
   unarchive:
     src: /tmp/joomla.zip
-    dest: /var/www/default/
+    dest: "{{ document_root }}"
     remote_src: yes
   notify: 
     - restart apache2
@@ -129,7 +115,7 @@
 
 - name: Change ownership of the web directories
   file:
-    dest: /var/www/default
+    dest: "{{ document_root }}"
     owner: www-data
     group: www-data
     recurse: yes

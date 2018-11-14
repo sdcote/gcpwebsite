@@ -1,12 +1,12 @@
 # {{ ansible_managed }}
-<VirtualHost *:80>
+<VirtualHost *:{{ http_port }}>
 
-  ServerAdmin {{ site.admin_email }}
-  DocumentRoot {{ site.document_root }}
-  ServerName {{ site.domain_name }}
-  ServerAlias www.{{ site.domain_name }}
+  ServerAdmin {{ admin_email }}
+  DocumentRoot {{ document_root }}
+  ServerName {{ domain_name }}
+  ServerAlias www.{{ domain_name }}
 
-  <Directory {{ site.document_root }}>
+  <Directory {{ document_root }}>
     Options -Indexes +FollowSymLinks +MultiViews
     AllowOverride All
     Order allow,deny

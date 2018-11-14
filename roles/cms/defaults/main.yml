@@ -1,23 +1,19 @@
 ---
-site:
-  admin_email: sysop@localhost
-  document_root: /var/www/default
-  domain_name: localhost
+admin_email: sysop@localhost
+document_root: /var/www/default
+domain_name: localhost
+http_port: 80
 
-apache:
-  port: 80
-  root: /var/www/
 
-php:
-  timezone: UTC
-  php_version: 5
-  max_execution_time: 30
-  max_input_time: 60
-  memory_limit: 128M
-  upload_max_filesize: 8M
-  allow_url_fopen: On
-  allow_url_include: Off
-  session_cookie_httponly: 1
-  display_errors: Off
-  error_reporting: E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED
+timezone: UTC
+php_version: 5
+max_execution_time: 30
+max_input_time: 60
+memory_limit: 128M
+upload_max_filesize: 8M
+allow_url_fopen: On
+allow_url_include: Off
+session_cookie_httponly: 1
+display_errors: Off
+error_reporting: E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED
 

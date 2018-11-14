@@ -1,3 +1,23 @@
+// Create a variable file to pass along to the ansible playbook with variables
+// defined in the terraform variables. This keeps management of variables in
+// one place and the resource provisioner call to ansible static
+data "template_file" "test" {
+  template = "${file("./ansible-vars.json.tpl")}"
+  // populate the template variables with these values
+  vars {
+    email = "${var.admin_email}"
+    domain = "${var.domain_name}"
+    directory = "${var.document_root}"
+  }
+}
+
+resource "null_resource" "export_rendered_template" {
+  provisioner "local-exec" {
+    command = "cat > ansible-vars.json <<EOL\n${data.template_file.test.rendered}\nEOL"
+  }
+}
+
+
 // Static IP Address
 resource "google_compute_address" "build-static-ip-address" {
   name = "${var.name}-static-ip"
@@ -85,7 +105,7 @@ resource "google_compute_instance" "host" {
   // Call ansible locally to log into the host and provision it using our playbook.
   // Note the inventory (-i) uses the IPv4 address appended with a comma and the playbook must contain 'hosts: all' to work properly.
   provisioner "local-exec" {
-    command = "ansible-playbook -u ${var.ssh_user} -i '${google_compute_instance.host.network_interface.0.access_config.0.assigned_nat_ip},' --private-key ${var.ssh_pri_key_file} -T 300 playbook.yml --extra-vars \"admin_email=${var.admin_email} document_root=${var.document_root} domain_name=${var.domain_name}\"" 
+    command = "ansible-playbook -u ${var.ssh_user} -i '${google_compute_instance.host.network_interface.0.access_config.0.assigned_nat_ip},' --private-key ${var.ssh_pri_key_file} -T 300 playbook.yml --extra-vars @ansible-vars.json" 
   }
 
 }
