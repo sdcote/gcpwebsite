@@ -59,10 +59,18 @@
 # PHP Configuration
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-- name: PHP Configuration
+- name: Apache PHP Configuration
   template: 
-    src=apache_php.ini.j2 
+    src=php.ini.j2 
     dest=/etc/php/7.2/apache2/php.ini 
+    owner=root 
+    group=root 
+    mode=0755
+
+- name: PHP-FPM Configuration
+  template: 
+    src=php.ini.j2 
+    dest=/etc/php/7.2/fpm/php.ini
     owner=root 
     group=root 
     mode=0755
