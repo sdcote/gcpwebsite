@@ -1,0 +1,37 @@
+---
+- name: Ensure postfix is installed.
+  package: name={{ item }} state=present
+  with_items:
+    - postfix
+    - libsasl2-modules 
+    - mailutils  
+
+- name: Update Postfix configuration.
+  template: 
+    src: main.cf.j2 
+    dest: "{{ postfix_config_file }}"
+  notify:
+    - restart postfix
+
+- name: Set the Postfix master configuration
+  copy:
+    src: master.cf
+    dest: /etc/postfix/master.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+
+- name: Update mail name
+  template: 
+    src: mailname.j2 
+    dest: /etc/mailname
+  notify:
+    - restart postfix
+
+- name: Ensure postfix is started and enabled at boot.
+  service:
+    name: postfix
+    state: "{{ postfix_service_state }}"
+    enabled: "{{ postfix_service_enabled }}"

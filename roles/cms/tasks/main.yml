@@ -27,7 +27,6 @@
     - php-mysql
     - php-curl
     - php-memcache
-    - php-mbstring
     - php-zip
     - unzip
 

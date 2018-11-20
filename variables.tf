@@ -1,5 +1,5 @@
 variable "name" {
-  description="This is the name of the repository server"
+  description="This is the name of the web server"
   default = "webhost"
 }
 
@@ -69,5 +69,15 @@ variable "document_root"{
 variable "domain_name"{
   description = ""
   default = "localhost"
+}
+
+variable "relay_host"{
+  description = "The name of the SMTP relay host, usually a corporate server"
+}
+variable "relay_login"{
+  description = "The login name this host should use to authenticate with the SMTP relay host"
+}
+variable "relay_passwd"{
+  description = "The login password this host should use to authenticate with the SMTP relay host"
 }
 

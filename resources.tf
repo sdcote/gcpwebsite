@@ -3,11 +3,16 @@
 // one place and the resource provisioner call to ansible static
 data "template_file" "test" {
   template = "${file("./ansible-vars.json.tpl")}"
+
   // populate the template variables with these values
   vars {
     email = "${var.admin_email}"
     domain = "${var.domain_name}"
     directory = "${var.document_root}"
+    host_name = "${var.name}"
+    relay_host = "${var.relay_host}"
+    relay_user = "${var.relay_login}"
+    relay_pass = "${var.relay_passwd}"
   }
 }
 

@@ -1,0 +1,8 @@
+---
+#     ansible-playbook -u ansible -i '35.239.107.65,' --private-key '../ansible-private-key.txt' -T 300 email.yml --extra-vars @ansible-vars.json
+
+- hosts: all
+  become: yes
+  roles:
+    - email
+
